@@ -1,0 +1,1 @@
+docker-compose -f docker/docker-compose.yml run -e OPTIMISE=true --rm node npx hardhat verify --network "${NETWORK:bscTestnet}" "$@"

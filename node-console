@@ -1,0 +1,2 @@
+mkdir -p .cache/hardhat-nodejs
+docker-compose -f docker/docker-compose.yml run --rm node bash "$@"

@@ -1,0 +1,9 @@
+version: '3'
+services:
+  node:
+    image: "node:18"
+    user: "node"
+    working_dir: /home/node/app
+    volumes:
+      - ../:/home/node/app
+      - ../.cache:/home/node/.cache
