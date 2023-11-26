@@ -1,3 +1,3 @@
-NETWORK=${1:-bscTestnet}
-echo "Launch console connected to $NETWORK"
+NETWORK="${NETWORK:sepolia}"
+echo "Launch console connected to ${NETWORK}"
 docker-compose -f docker/docker-compose.yml run -e OPTIMISE=true --rm node npx hardhat console --network "${NETWORK}"

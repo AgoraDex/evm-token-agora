@@ -5,7 +5,7 @@ import path from "path";
 import { boolean } from "hardhat/internal/core/params/argumentTypes";
 import { BaseContract, ContractFactory } from "ethers";
 dotenv.config({path: path.resolve(__dirname, ".env")});
-const { PRIVATE_KEY, API_KEY, PRIVATE_KEY_MAINNET } = process.env;
+const { PRIVATE_KEY, API_KEY, API_BSC_KEY, API_ARBITRUM_KEY, PRIVATE_KEY_MAINNET } = process.env;
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -44,45 +44,53 @@ const config: HardhatUserConfig = {
       chainId: 1,
       url: "https://mainnet.infura.io/v3/53d95e4c1b3649a19f83f206226cf482",
       accounts: [`${PRIVATE_KEY_MAINNET}`]
+    },
+    arbitrumSepolia: {
+      chainId: 421614,
+      url: "https://sepolia-rollup.arbitrum.io/rpc",
+      accounts: [`${PRIVATE_KEY}`]
+    },
+    arbitrum: {
+      chainId: 42161,
+      url: "https://arbitrum-one.publicnode.com",
+      accounts: [`${PRIVATE_KEY_MAINNET}`]
     }
   },
   etherscan: {
-    apiKey: `${API_KEY}`,
-    // customChains: [
-    //   {
-    //     chainId: 97,
-    //     urls: {
-    //       apiURL: "https://api-testnet.bscscan.com/",
-    //       browserURL: "https://testnet.bscscan.com/",
-    //     },
-    //     network: "bscTestnet"
-    //   },
-    //   {
-    //     chainId: 56,
-    //     urls: {
-    //       apiURL: "https://api.bscscan.com/",
-    //       browserURL: "https://testnet.bscscan.com/",
-    //     },
-    //     network: "bsc"
-    //   }
-    // ]
+    apiKey: {
+      "sepolia": `${API_KEY}`,
+      "bscTestnet": `${API_BSC_KEY}`,
+      "arbitrumOne": `${API_ARBITRUM_KEY}`,
+      "arbitrumSepolia": `${API_ARBITRUM_KEY}`,
+    },
+    customChains: [
+      {
+        network: "arbitrumSepolia",
+        chainId: 421614,
+        urls: {
+          apiURL: "https://api-sepolia.arbiscan.io/api",
+          browserURL: "https://sepolia.arbiscan.io/"
+        }
+      }
+    ]
   },
 };
 
-extendEnvironment((hre) => {
-  hre.getSignatures = function(contract: ContractFactory | BaseContract, outputHashes: boolean): string[] {
-    const funcSigs : string[] = [];
-    for (const key in contract.interface.functions) {
-      const func = contract.interface.getFunction(key);
-      if (func.type != "function") {
-        continue;
-      }
-      const sigHash = contract.interface.getSighash(key);
-      outputHashes && console.info(`${key} => ${sigHash}`);
-      funcSigs.push(sigHash);
-    }
-    return funcSigs;
+extendEnvironment( (hre) => {
+  if (hre.INITIALIZED) {
+    return;
   }
+  hre.SEPOLIA_CHAIN_ID = 11155111;
+  hre.BCS_TESTNET_CHAIN_ID = 97;
+  hre.ARBITRUM_SEPOLIA_CHAIN_ID = 421614;
+  hre.ARBITRUM = 42161;
+  hre.INITIALIZED = true;
+
+  console.info(`Connected to network: ${hre.network.name}`);
+  // const [signer] = hre.ethers.getSigners();
+  // hre.SIGNER_ADDRESS = signer.address;
+  // console.info(`Signer: ${signer.address}, balance ${await signer.getBalance()}`);
+  // console.info();
 });
 
 export default config;
