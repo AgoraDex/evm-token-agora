@@ -5,7 +5,7 @@ import path from "path";
 import { boolean } from "hardhat/internal/core/params/argumentTypes";
 import { BaseContract, ContractFactory } from "ethers";
 dotenv.config({path: path.resolve(__dirname, ".env")});
-const { PRIVATE_KEY, API_KEY, API_BSC_KEY, API_ARBITRUM_KEY, PRIVATE_KEY_MAINNET } = process.env;
+const { PRIVATE_KEY, API_KEY, API_ARBITRUM_KEY, API_BSC_KEY, PRIVATE_KEY_MAINNET, API_POLYGON_KEY } = process.env;
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -37,12 +37,12 @@ const config: HardhatUserConfig = {
     },
     sepolia: {
       chainId: 11155111,
-      url: "https://sepolia.infura.io/v3/53d95e4c1b3649a19f83f206226cf482",
+      url: "https://sepolia.infura.io",
       accounts: [`${PRIVATE_KEY}`],
     },
     ethereum: {
       chainId: 1,
-      url: "https://mainnet.infura.io/v3/53d95e4c1b3649a19f83f206226cf482",
+      url: "https://mainnet.infura.io",
       accounts: [`${PRIVATE_KEY_MAINNET}`]
     },
     arbitrumSepolia: {
@@ -54,14 +54,29 @@ const config: HardhatUserConfig = {
       chainId: 42161,
       url: "https://arbitrum-one.publicnode.com",
       accounts: [`${PRIVATE_KEY_MAINNET}`]
+    },
+    polygonMumbai: {
+      chainId: 80001,
+      url: "https://polygon-mumbai.infura.io",
+      accounts: [`${PRIVATE_KEY}`]
+    },
+    polygon: {
+      chainId: 137,
+      url: "https://polygon-mainnet.infura.io",
+      accounts: [`${PRIVATE_KEY_MAINNET}`]
     }
   },
   etherscan: {
     apiKey: {
       "sepolia": `${API_KEY}`,
+      "ethereum": `${API_KEY}`,
+      "mainnet": `${API_KEY}`,
       "bscTestnet": `${API_BSC_KEY}`,
       "arbitrumOne": `${API_ARBITRUM_KEY}`,
       "arbitrumSepolia": `${API_ARBITRUM_KEY}`,
+      "polygon": `${API_POLYGON_KEY}`,
+      "polygonMumbai": `${API_POLYGON_KEY}`,
+      "bsc": `${API_BSC_KEY}`,
     },
     customChains: [
       {
@@ -71,26 +86,29 @@ const config: HardhatUserConfig = {
           apiURL: "https://api-sepolia.arbiscan.io/api",
           browserURL: "https://sepolia.arbiscan.io/"
         }
+      },
+      {
+        network: "ethereum",
+        chainId: 1,
+        urls: {
+          apiURL: "https://api.etherscan.io/api",
+          browserURL: "https://etherscan.io"
+        }
       }
     ]
-  },
+  }
 };
 
 extendEnvironment( (hre) => {
-  if (hre.INITIALIZED) {
-    return;
-  }
-  hre.SEPOLIA_CHAIN_ID = 11155111;
-  hre.BCS_TESTNET_CHAIN_ID = 97;
-  hre.ARBITRUM_SEPOLIA_CHAIN_ID = 421614;
-  hre.ARBITRUM = 42161;
-  hre.INITIALIZED = true;
+  hre["SEPOLIA_CHAIN_ID"] = 11155111;
+  hre["BCS_TESTNET_CHAIN_ID"] = 97;
+  hre["BCS_CHAIN_ID"] = 56;
+  hre["ARBITRUM_SEPOLIA_CHAIN_ID"] = 421614;
+  hre["ARBITRUM_CHAIN_ID"] = 42161;
+  hre["POLYGON_MUMBAI_CHAIN_ID"] = 80001;
+  hre["POLYGON_CHAIN_ID"] = 137;
 
   console.info(`Connected to network: ${hre.network.name}`);
-  // const [signer] = hre.ethers.getSigners();
-  // hre.SIGNER_ADDRESS = signer.address;
-  // console.info(`Signer: ${signer.address}, balance ${await signer.getBalance()}`);
-  // console.info();
 });
 
 export default config;
