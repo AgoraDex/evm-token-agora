@@ -7,12 +7,6 @@ import {ERC20Capped} from "./ERC20Capped.sol";
 import {Ownable} from "./Ownable.sol";
 
 contract AgoraToken is TokenStorage, ERC20Capped, Ownable {
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {
-        super._beforeTokenTransfer(from, to, amount);
-
-        require(_whitelist[from], "AgoraToken: token transfer while paused");
-    }
-
     function addWhitelist(address account) public onlyOwner {
         _whitelist[account] = true;
     }

@@ -28,20 +28,33 @@ async function main() {
   let Proxy = await ethers.getContractFactory("TokenProxy");
   let Admin = await ethers.getContractFactory("Admin");
 
-  // let admin = await Admin.attach("0x4098D7DeaCCf54D3fCD92B93c2A7F5792E1e1a93")
+  /*
+  let admin = await Admin.attach("0x65CA21a83aF05776D42F34d9d518e161E65dd293");
+   */
   let admin = await Admin.deploy();
   await admin.deployed();
+  console.log(admin.address);
 
-  let impl = await Token.deploy();
+  /*
+  let impl = await Token.attach("0x50a68286b896d831f20baf76a301e86b9f2767e6");
+   */
+  let impl = await Token.deploy({gasPrice: "27000000000"});
   await impl.deployed();
+  console.log(impl.address);
 
   let init = await impl.initializeSignature("Agora DEX Token", "AGA", ethers.utils.parseEther("500000000"));
-  let proxy = await Proxy.deploy(impl.address, admin.address, init);
+  let proxy = await Proxy.deploy(impl.address, admin.address, init, {gasPrice: "27000000000"});
   await proxy.deployed();
 
   let token = await Token.attach(proxy.address);
+  /*
+    let token = await Token.attach("0xA910B6d8F431410438586b61A262418601bE59Af");
+   */
 
+  await token.addWhitelist("0x0000000000000000000000000000000000000000");
+  await token.addWhitelist("0x65CA21a83aF05776D42F34d9d518e161E65dd293");
 
+  await token.mint("0x65CA21a83aF05776D42F34d9d518e161E65dd293", ethers.utils.parseEther("10000"));
 }
 
 // We recommend this pattern to be able to use async/await everywhere

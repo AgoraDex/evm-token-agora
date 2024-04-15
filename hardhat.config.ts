@@ -42,7 +42,7 @@ const config: HardhatUserConfig = {
     },
     ethereum: {
       chainId: 1,
-      url: "https://mainnet.infura.io",
+      url: "https://mainnet.infura.io/v3/46568c7016394a69bd69da9861541e70",
       accounts: [`${PRIVATE_KEY_MAINNET}`]
     },
     arbitrumSepolia: {
@@ -57,12 +57,12 @@ const config: HardhatUserConfig = {
     },
     polygonMumbai: {
       chainId: 80001,
-      url: "https://polygon-mumbai.infura.io",
+      url: "https://polygon-mumbai.blockpi.network/v1/rpc/public",
       accounts: [`${PRIVATE_KEY}`]
     },
     polygon: {
       chainId: 137,
-      url: "https://polygon-mainnet.infura.io",
+      url: "https://polygon-mainnet.infura.io/v3/46568c7016394a69bd69da9861541e70",
       accounts: [`${PRIVATE_KEY_MAINNET}`]
     }
   },

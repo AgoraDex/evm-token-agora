@@ -1,1 +1,1 @@
-docker-compose -f docker/docker-compose.yml run -e OPTIMISE=true --rm node npx hardhat compile
+docker-compose -f docker/docker-compose.yml run -e OPTIMISE=true --rm node npx hardhat compile "$@"
