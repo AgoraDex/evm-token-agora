@@ -7,6 +7,10 @@ import {ERC20Capped} from "./ERC20Capped.sol";
 import {Ownable} from "./Ownable.sol";
 
 contract AgoraToken is TokenStorage, ERC20Capped, Ownable {
+    function updateName(string memory name_) public onlyOwner {
+        _name = name_;
+    }
+
     function addWhitelist(address account) public onlyOwner {
         _whitelist[account] = true;
     }

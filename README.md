@@ -1,6 +1,6 @@
-# AgoraDex Token Contract
+# AgoraHub Token Contract
 
-This project is a part of AgoraDex.
+This project is a part of AgoraHub.
 
 ## Contract Overview
 

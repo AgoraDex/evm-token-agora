@@ -15,6 +15,17 @@ const deployment = {
       "0x2b2430CdA8129c4c74f30E8cbFbC48E9531BeBFb"
     ],
     proxy: "0x55068a3ac0F8e5CaB37538918C21252C517020e5",
+  },
+  "ethereum": {
+    admin: "0x65CA21a83aF05776D42F34d9d518e161E65dd293",
+    impl: "0x2E59fe63c2DFffbB61957dB7A16f3C6824659d5D",
+    proxy: "0x87B46212e805A3998B7e8077E9019c90759Ea88C",
+    multi: "0xa3C608D29DC505F0EC082a17DdBa9ab24197efFc",
+  },
+  "sepolia": {
+    admin: "0x93B5d4dA61c3237e0043D25E299f65A1cfc7b82a",
+    impl: "0x01fD3a387bcFEa5510264a94792f6D6a3eFfb236",
+    proxy: "0x34c73c7A232524e46a300728D27Af9F73c2774A7"
   }
 };
 
@@ -29,21 +40,21 @@ async function main() {
   let Admin = await ethers.getContractFactory("Admin");
 
   /*
-  let admin = await Admin.attach("0x65CA21a83aF05776D42F34d9d518e161E65dd293");
+  let admin = await Admin.attach("0x93B5d4dA61c3237e0043D25E299f65A1cfc7b82a");
    */
   let admin = await Admin.deploy();
   await admin.deployed();
   console.log(admin.address);
 
   /*
-  let impl = await Token.attach("0x50a68286b896d831f20baf76a301e86b9f2767e6");
+  let impl = await Token.attach("0x87B46212e805A3998B7e8077E9019c90759Ea88C");
    */
-  let impl = await Token.deploy({gasPrice: "27000000000"});
+  let impl = await Token.deploy(); // {gasPrice: "15000000000"}
   await impl.deployed();
   console.log(impl.address);
 
-  let init = await impl.initializeSignature("Agora DEX Token", "AGA", ethers.utils.parseEther("500000000"));
-  let proxy = await Proxy.deploy(impl.address, admin.address, init, {gasPrice: "27000000000"});
+  let init = await impl.initializeSignature("AgoraHub", "AGA", ethers.utils.parseEther("500000000"));
+  let proxy = await Proxy.deploy(impl.address, admin.address, init); // {gasPrice: "27000000000"}
   await proxy.deployed();
 
   let token = await Token.attach(proxy.address);
@@ -55,6 +66,8 @@ async function main() {
   await token.addWhitelist("0x65CA21a83aF05776D42F34d9d518e161E65dd293");
 
   await token.mint("0x65CA21a83aF05776D42F34d9d518e161E65dd293", ethers.utils.parseEther("10000"));
+
+  await  impl.approve()
 }
 
 // We recommend this pattern to be able to use async/await everywhere
